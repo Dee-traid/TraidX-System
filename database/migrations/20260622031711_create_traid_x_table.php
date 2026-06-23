@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class CreateInitialTraidxSchema extends AbstractMigration
+final class CreateTraidXTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -172,9 +172,7 @@ final class CreateInitialTraidxSchema extends AbstractMigration
 
         $this->execute("ALTER TABLE payments ADD CONSTRAINT check_payment_method CHECK (method IN ('card','mobile_money','bank_transfer'));");
         $this->execute("ALTER TABLE payments ADD CONSTRAINT check_payment_status CHECK (status IN ('pending','success','failed','refunded'));");
+    
+
     }
-
-    
-
-    
 }

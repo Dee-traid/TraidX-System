@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TraidX — Book flights without the runaround</title>
+<meta name="description" content="Search, compare, and book flights in minutes. Real seat maps, real prices, no surprise fees.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/public/assets/css/style.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="public/index.html" class="logo">Traid<span class="dot">X</span></a>
+    <ul class="nav-links">
+      <li><a href="#routes">Routes</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#why">Why TraidX</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn-text">Log in</a>
+      <a href="#search" class="btn btn-amber">Book a flight</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="search">
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="blip"></span> Live fares · updated every few minutes</span>
+      <h1>Book the flight.<br>Skip <em>everything</em> else.</h1>
+      <p class="lede">Real seat maps, real prices, and a confirmation that actually arrives. No bundled add-ons you didn't ask for, no surprise fees at checkout.</p>
+
+      <div class="route-art" aria-hidden="true">
+        <div class="route-row">
+          <div>
+            <div class="airport-code">LOS</div>
+            <div class="airport-name">Lagos</div>
+          </div>
+          <div style="text-align:right">
+            <div class="airport-code">ABV</div>
+            <div class="airport-name">Abuja</div>
+          </div>
+        </div>
+        <div class="route-path">
+          <svg viewBox="0 0 480 64" preserveAspectRatio="none">
+            <path class="route-dash" d="M10,32 C160,-8 340,72 470,32"></path>
+          </svg>
+          <svg class="route-plane" width="22" height="22" viewBox="0 0 24 24" fill="none" style="position:absolute; top:0; left:0;">
+            <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2.5 1.5V22l4-1 4 1v-1.5L13.5 19v-5.5L21 16z" fill="#E8743B"/>
+          </svg>
+        </div>
+        <div class="route-meta">
+          <span>NONSTOP</span>
+          <span>1H 25M</span>
+          <span>QA 204</span>
+        </div>
+      </div>
+
+      <div class="hero-proof">
+        <div class="proof-item">
+          <span class="proof-num">240+</span>
+          <span class="proof-label">routes covered</span>
+        </div>
+        <div class="proof-item">
+          <span class="proof-num">38</span>
+          <span class="proof-label">partner airlines</span>
+        </div>
+        <div class="proof-item">
+          <span class="proof-num">4.8/5</span>
+          <span class="proof-label">average traveler rating</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-search">
+      <form class="search-card" aria-label="Flight search">
+        <div class="ticket-row">
+          <div class="seg">
+            <label for="from">From</label>
+            <input id="from" type="text" placeholder="Lagos (LOS)" value="Lagos (LOS)">
+          </div>
+          <div class="swap-btn" role="button" tabindex="0" aria-label="Swap origin and destination">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 10l5-5 5 5M7 14l5 5 5-5"/></svg>
+          </div>
+          <div class="seg">
+            <label for="to">To</label>
+            <input id="to" type="text" placeholder="Where to?">
+          </div>
+        </div>
+        <div class="ticket-row2">
+          <div class="seg">
+            <label for="depart">Depart</label>
+            <input id="depart" type="text" placeholder="15 Jul">
+          </div>
+          <div class="seg">
+            <label for="return">Return</label>
+            <input id="return" type="text" placeholder="One-way">
+          </div>
+          <div class="seg">
+            <label for="pax">Passengers</label>
+            <select id="pax">
+              <option>1 adult</option>
+              <option>2 adults</option>
+              <option>3 adults</option>
+              <option>Family (4+)</option>
+            </select>
+          </div>
+          <button type="submit" class="search-btn">
+            Search flights
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+        <div class="stub-note">
+          <span>BOARDING · ALL CLASSES</span>
+          <span>NO HIDDEN FEES</span>
+        </div>
+      </form>
+    </div>
+  </div>
+</header>
+
+<!-- ============ TRUST STRIP ============ -->
+<div class="trust-strip">
+  <div class="wrap trust-inner">
+    <span>PCI-DSS SECURE CHECKOUT</span>
+    <span>·</span>
+    <span>FREE CANCELLATION ON SELECT FARES</span>
+    <span>·</span>
+    <span>24/7 SUPPORT</span>
+    <span>·</span>
+    <span>PRICE MATCH GUARANTEE</span>
+  </div>
+</div>
+
+<!-- ============ POPULAR ROUTES (departure board) ============ -->
+<section id="routes" style="padding-top:64px;">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-eyebrow">Departures</span>
+      <h2>Where everyone's flying this week</h2>
+      <p>Live snapshot of our most-searched routes, refreshed continuously from current fare data.</p>
+    </div>
+
+    <div class="board">
+      <div class="board-head">
+        <span>Route</span>
+        <span>Cities</span>
+        <span>Status</span>
+        <span>From</span>
+        <span></span>
+      </div>
+
+      <div class="board-row">
+        <span class="board-route">LOS <span class="arrow">→</span> ABV</span>
+        <span class="board-city">Lagos to Abuja</span>
+        <span class="board-status"><span class="dot"></span>On time</span>
+        <span class="board-price">$64</span>
+        <a href="#search" class="board-cta">Book →</a>
+      </div>
+      <div class="board-row">
+        <span class="board-route">LOS <span class="arrow">→</span> LHR</span>
+        <span class="board-city">Lagos to London</span>
+        <span class="board-status"><span class="dot"></span>On time</span>
+        <span class="board-price">$612</span>
+        <a href="#search" class="board-cta">Book →</a>
+      </div>
+      <div class="board-row">
+        <span class="board-route">ABV <span class="arrow">→</span> DXB</span>
+        <span class="board-city">Abuja to Dubai</span>
+        <span class="board-status"><span class="dot"></span>On time</span>
+        <span class="board-price">$489</span>
+        <a href="#search" class="board-cta">Book →</a>
+      </div>
+      <div class="board-row">
+        <span class="board-route">PHC <span class="arrow">→</span> LOS</span>
+        <span class="board-city">Port Harcourt to Lagos</span>
+        <span class="board-status"><span class="dot"></span>On time</span>
+        <span class="board-price">$58</span>
+        <a href="#search" class="board-cta">Book →</a>
+      </div>
+      <div class="board-row">
+        <span class="board-route">LOS <span class="arrow">→</span> JFK</span>
+        <span class="board-city">Lagos to New York</span>
+        <span class="board-status"><span class="dot"></span>On time</span>
+        <span class="board-price">$745</span>
+        <a href="#search" class="board-cta">Book →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section id="why">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-eyebrow">Why TraidX</span>
+      <h2>Built for people who'd rather be packing</h2>
+      <p>Three things we obsess over so your booking takes minutes, not browser tabs.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature">
+        <span class="feature-num">SEATS</span>
+        <h3>Pick your actual seat</h3>
+        <p>Live seat maps pulled straight from the airline, not a generic placeholder. See window, aisle, and legroom before you pay.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-num">PRICE</span>
+        <h3>The price you see is the price you pay</h3>
+        <p>Taxes and fees are itemized upfront. Nothing new appears at the payment screen.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-num">STATUS</span>
+        <h3>Know before the airline tells you</h3>
+        <p>Delay and gate-change alerts land in your inbox and your account the moment they're issued.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how-it-works">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-eyebrow">Process</span>
+      <h2>From search to boarding pass</h2>
+      <p>Four steps, no detours.</p>
+    </div>
+
+    <div class="how-wrap">
+      <div class="how-step">
+        <div class="how-stage">Step<strong>01</strong></div>
+        <div class="how-content">
+          <h3>Search your route</h3>
+          <p>Enter where you're starting, where you're headed, and when. We check fares across partner airlines in real time.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-stage">Step<strong>02</strong></div>
+        <div class="how-content">
+          <h3>Choose your seat</h3>
+          <p>Compare fares side by side, then pick an actual seat from the live cabin map — economy, business, or first.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-stage">Step<strong>03</strong></div>
+        <div class="how-content">
+          <h3>Pay securely</h3>
+          <p>Checkout runs through Stripe with full card encryption. Your total is locked in before you confirm.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-stage">Step<strong>04</strong></div>
+        <div class="how-content">
+          <h3>Get your confirmation</h3>
+          <p>Your e-ticket and booking reference land in your inbox immediately, with status updates from there to gate.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAT BAND ============ -->
+<section>
+  <div class="wrap">
+    <div class="stat-band">
+      <div>
+        <blockquote>"I booked a same-day flight from a hospital waiting room. Took less time than the coffee I bought after."</blockquote>
+        <div class="stat-author"><strong>Adaeze N.</strong> — booked LOS → PHC, May 2026</div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat">
+          <span class="stat-value">2.3 min</span>
+          <span class="stat-label">average time to book</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">99.1%</span>
+          <span class="stat-label">on-time confirmation delivery</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">0</span>
+          <span class="stat-label">hidden fees, ever</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">24/7</span>
+          <span class="stat-label">human support</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="cta-section">
+  <div class="wrap">
+    <h2>Your next gate is<br><em>closer than you think.</em></h2>
+    <p>Search live fares across 240+ routes and lock in your seat in under three minutes.</p>
+    <div class="cta-buttons">
+      <a href="#search" class="btn btn-amber">Search flights</a>
+      <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo">Traid<span class="dot" style="color:var(--amber)">X</span></a>
+        <p>A flight and transport booking platform built for travelers who want the booking part to be the boring part.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#routes">Routes</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#why">Why TraidX</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help center</a></li>
+          <li><a href="#">Manage booking</a></li>
+          <li><a href="#">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 TraidX. All fares shown in USD.</span>
+      <span>Privacy · Terms · Refund policy</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/public/assets/js/script.js"></script>
+</body>
+</html>
