@@ -92,6 +92,7 @@
       target.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
+<<<<<<< HEAD
 })();
 
 /* ==========================================================================
@@ -317,3 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+=======
+})();
+>>>>>>> 1758db6649466affca38dfcfa2f398ace1271eff
