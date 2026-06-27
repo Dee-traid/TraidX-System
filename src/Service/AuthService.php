@@ -2,16 +2,23 @@
 
 namespace App\Service;
 
-require_once __DIR__ . '/../Models/User.php';
-require_once __DIR__ . '/../database/database.php';
-
-
 use App\Models\User;
-use Database\Connection;
+use App\Controller\AuthController;
+use App\Config\Database;
 use PDO;
+use PDOException;
 
 class AuthService
 {
-    
+    public static function register(){
+
+        $json = file_get_contents('php:// inputs');
+        $data = json_decode($json, true);
+        
+        $id = uniqid('user-');
+        $userName
+
+
+    }
    
 }
