@@ -14,7 +14,7 @@ class UserRepository{
         $this->db = $db;
     }
 
-    public function findOneByEmail(string $email) : string
+    public function findByEmail(string $email)
     {
         $query = "SELECT email FROM users WHERE email = :email LIMIT 1";
         $stmt = $this->db->prepare($query);
@@ -22,7 +22,24 @@ class UserRepository{
         $stmt->execute();
 
         $user = $stmt->fetch();
-        return $user ? $user['email'] : null;
+         if($email){
+            return $user ? $user['email'] : null;
+        }
+        
+    }
+
+     public function findByID(string $id)
+    {
+        $query = "SELECT id FROM users WHERE id = :id LIMIT 1";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        $user = $stmt->fetch();
+         if($id){
+            return $user ? $user['id'] : null;
+        }
+        
     }
 
     public function createUser()
@@ -40,5 +57,9 @@ class UserRepository{
         $stmt->bindParam(':createdAt', $createdAt);
         $stmt->bindParam(':updatedAt', $updatedAt);
         $stmt->execute();
+    }
+
+    public function rateCheck(){
+        
     }
 }
