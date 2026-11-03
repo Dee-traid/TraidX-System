@@ -1,0 +1,26 @@
+Booking
+•	Search for schedules (origin, destination, date/time, passengers)
+•	Seat/cabin/class selection (for flights) or vehicle/unit selection (for buses/trains)
+•	Fare/pricing display (base price, taxes/fees, discounts, baggage/amenities if applicable)
+•	Booking creation (reserve tickets/confirm booking)
+•	Passenger details form (name, contact info, ID details if needed)
+•	Booking confirmation (ticket/itinerary info, reference/PNR)
+
+
+Payments
+•	Payment methods (card, etc.)
+•	Payment status tracking (pending/success/failed)
+•	Refund/cancellation handling (basic rules)
+•	Refund/cancellation handling (basic rules)
+Ticketing & fulfillment
+•	Generate ticket/booking document (PDF/email/printable itinerary)
+•	Manage ticket validity (e-ticket barcode/QR or reference number)
+•	Notifications (email/SMS) for confirmation, changes, cancellation
+
+
+Admin / operations (simplified)
+•	Manage trips (Routes/Schedules): create, edit, delete schedules and timings.
+•	Manage availability (Inventory): set seat/unit counts and control booking when full (and overbooking rules if any).
+•	Manage prices: set fare types (classes), and create discounts/promotions and seasonal pricing.
+•	Manage bookings: view all bookings, change status, approve/confirm (if manual), and override when needed.
+•	Manage support messages: store customer messages and track notes for admin follow-up.

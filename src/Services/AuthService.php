@@ -17,40 +17,56 @@ class AuthService
     
     public  function register(array $data){
 
-        $userName = trim($data['username'] ?? '');
+        $id = uniqid('user-', true);
+
+        $firstName = trim($data['first_name'] ?? '');
+        $lastName = trim($data['last_name'] ?? '');
         $email = trim($data['email'] ?? '');
-        $phone = trim($data['phone'] ?? '');
-        $password = $data['password'] ?? '';
+        $phoneNumber = trim($data['phone'] ?? '');
+        $Password = $data['password'] ?? '';
+        $confirmPasswword = $data['confirm_password'];
+
+        $userName = $firstName . "" . $lastName;
 
         $fields = ['$username', '$email', '$phone', '$password'];
-        foreach($fields as $field){
-            if(empty([$field])){
-                return "This $field is required";
-
+        foreach($fields as $key => $field){
+            if(empty($field)){
+                throw new Exception(ucfirst(str_replace('_', ' ', $key)) . " is required.");
             }
+        }  
+
+        if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/', $Password)) {
+            throw new Exception("Password must be at least 8 characters and contain both letters and numbers.");
+             return;
         }
 
-        if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/', $password)) {
-                return "Password must be at least 8 characters and contain both letters and numbers.";
+        if (!preg_match('/^(?:\+234|0)[789][01]\d{8}$/', $phoneNumber)) {
+            throw new Exception("Please enter a valid phone number (e.g., 08012345678 or +2348012345678).");
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return "Enter a valid email address.";
+            throw new Exception("Please enter a valid email address.");
         }
-            $emailCheck = $this->userRepository->findByEmail($email) !== null;
+        
+        $emailCheck = $this->userRepository->findByEmail($email) !== null;
         if ($emailCheck) {
             throw new Exception("Email already registered.");
         }
 
-        $id = uniqid('user-', true);
+        if($Password !== $confirmPasswword){
+             throw new Exception("Password does not match.");
+        }      
+        $password = password_hash($Password, PASSWORD_BCRYPT, ['cost' => 12]);
+
+        $success = $this->userRepository->createUser($id, $userName, $email, $password, $phoneNumber);
+
+        if (!$success) {
+            throw new Exception("Critical error mapping registration properties to core data repository.");
+        }
+
+        return true;
+
         
-        // if ($data['password'] !== $data['confirmPassword']) {
-        //         return "Passwords do not match.";
-        // }
-
-        $success = $this->userRepository->createUser($id, $userName, $email, $password);
-
-        //$hashedPassword = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 			
     }
    

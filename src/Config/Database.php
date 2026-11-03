@@ -1,9 +1,15 @@
 <?php
 
+namespace App\Config;
+
+use PDO;
+use PDOException;
+use Dotenv\Dotenv;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 if(file_exists(__DIR__ . '/../.env')){
-    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
     $dotenv->load();
 }
 
@@ -25,13 +31,13 @@ class Database
         $password = getenv('DB_PASS');
 
         $dsn = "pgsql:host=$host;port=$port;dbname=$database";
+        
         try {
            self::$pdo =  new PDO($dsn, $username, $password);
            self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             http_response_code(500);
             header('content-type: application/json');
-
             die(json_encode([
                 "status" => "error",
                 "message" => "Database connection failed: " . $e->getMessage()

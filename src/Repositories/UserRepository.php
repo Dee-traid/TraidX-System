@@ -5,7 +5,6 @@ namespace App\Repositories;
 use PDO;
 use PDOException;
 use App\Models\User;
-
 class UserRepository{
 
     private PDO $db;
@@ -16,16 +15,21 @@ class UserRepository{
 
     public function findByEmail(string $email)
     {
-        $query = "SELECT email FROM users WHERE email = :email LIMIT 1";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
+        try{
+            $query = "SELECT email FROM users WHERE email = :email LIMIT 1";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
 
-        $user = $stmt->fetch();
-         if($email){
-            return $user ? $user['email'] : null;
+            $user = $stmt->fetch();
+            if($email){
+                return $user ? $user['email'] : null;
+            }      
+
+        }catch(PDOException $e){
+            // throw new PDOException("Email not found $e->getMessage()");
         }
-        
+       
     }
 
      public function findByID(string $id)
@@ -42,11 +46,16 @@ class UserRepository{
         
     }
 
-    public function createUser()
+    public function createUser(string $id, string $name, string $email, string $password, string $phone)
     {
         $query = "INSERT INTO users (id, email, password, phone, role, status, created_at, updated_at) 
                         VALUES (:id, :email, :password, :phone, :role, :status, :createdAt, :updatedAt)";
-        
+        $role = 'customer';
+        $status = 'active';
+        $createdAt = date('Y-m-d H:i:s');
+        $updatedAt = date('Y-m-d H:i:s');
+
+
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':email', $email);
@@ -57,6 +66,8 @@ class UserRepository{
         $stmt->bindParam(':createdAt', $createdAt);
         $stmt->bindParam(':updatedAt', $updatedAt);
         $stmt->execute();
+
+        return true;
     }
 
     public function rateCheck(){

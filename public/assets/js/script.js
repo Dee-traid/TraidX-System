@@ -1,26 +1,46 @@
+document.addEventListener("DOMContentLoaded", () => {
+  "use strict";
 
-(function () {
-  var nav = document.querySelector(".nav");
+  const API_BASE_URL = "/api/v1/auth";
+  
+  // Core DOM Selections
+  const nav = document.querySelector(".nav");
+  const swapBtn = document.querySelector(".swap-btn");
+  const fromInput = document.getElementById("from");
+  const toInput = document.getElementById("to");
+  const searchForm = document.querySelector(".search-card");
+  const registerForm = document.getElementById("register-form");
+  const loginForm = document.getElementById("login-form");
+
+  /* ==========================================================================
+     1. Global Dynamic UI Utilities
+     ========================================================================== */
+
+  // Navigation Bar Background Scroll Tracking
   if (nav) {
-    var onScroll = function () {
-      if (window.scrollY > 8) {
-        nav.classList.add("nav--scrolled");
-      } else {
-        nav.classList.remove("nav--scrolled");
-      }
+    const onScroll = () => {
+      nav.classList.toggle("nav--scrolled", window.scrollY > 8);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
   }
 
-  /* ---------- From / To swap button ---------- */
-  var swapBtn = document.querySelector(".swap-btn");
-  var fromInput = document.getElementById("from");
-  var toInput = document.getElementById("to");
+  // Smooth-scroll Handler for in-page anchors
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", (e) => {
+      const targetId = link.getAttribute("href");
+      if (targetId.length <= 1) return; 
+      const target = document.querySelector(targetId);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
 
+  // From / To Swap Field Engine
   function swapFields() {
     if (!fromInput || !toInput) return;
-    var temp = fromInput.value;
+    const temp = fromInput.value;
     fromInput.value = toInput.value;
     toInput.value = temp;
     fromInput.focus();
@@ -28,8 +48,7 @@
 
   if (swapBtn) {
     swapBtn.addEventListener("click", swapFields);
-    // role="button" elements need explicit keyboard activation
-    swapBtn.addEventListener("keydown", function (e) {
+    swapBtn.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         swapFields();
@@ -37,282 +56,219 @@
     });
   }
 
-  /* ---------- Search form ---------- */
-  var searchForm = document.querySelector(".search-card");
+  /* ==========================================================================
+     2. API Feedback & Structural Request Communication Layer
+     ========================================================================== */
 
-  function showFormMessage(text, isError) {
-    var existing = searchForm.querySelector(".form-message");
-    if (existing) existing.remove();
+  /**
+   * Appends or updates notice message boxes matching design token layout rules
+   */
+  function displayFeedback(formElement, messageText, isError = false) {
+    if (!formElement) return;
+    let messageBox = formElement.querySelector(".auth-feedback-msg, .form-message");
 
-    var msg = document.createElement("p");
-    msg.className = "form-message" + (isError ? " form-message--error" : "");
-    msg.setAttribute("role", "status");
-    msg.textContent = text;
-    searchForm.appendChild(msg);
+    if (!messageBox) {
+      messageBox = document.createElement("div");
+      messageBox.className = formElement.classList.contains("search-card") ? "form-message" : "auth-feedback-msg";
+      const header = formElement.querySelector(".form-header");
+      header ? header.after(messageBox) : formElement.prepend(messageBox);
+    }
+
+    messageBox.textContent = messageText;
+    
+    if (formElement.classList.contains("search-card")) {
+      messageBox.classList.toggle("form-message--error", isError);
+    } else {
+      messageBox.classList.toggle("auth-feedback-msg--error", isError);
+      messageBox.classList.toggle("auth-feedback-msg--success", !isError);
+    }
   }
 
+  /**
+   * Unified asynchronous API network connection wrapper
+   */
+  async function makeRequest(endpoint, payload, formElement) {
+    displayFeedback(formElement, "Connecting to server...", false);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Security authorization validation exception.");
+      }
+
+      return data;
+
+    } catch (error) {
+      const fallbackError = "Connection lost. Please verify your network connection.";
+      displayFeedback(formElement, error.message || fallbackError, true);
+      return null;
+    }
+  }
+
+  /* ==========================================================================
+     3. Unified Form Feature Handlers
+     ========================================================================== */
+
+  // --- Flight Lookup Search Engine ---
   if (searchForm) {
-    searchForm.addEventListener("submit", function (e) {
+    searchForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      var from = fromInput ? fromInput.value.trim() : "";
-      var to = toInput ? toInput.value.trim() : "";
+      const from = fromInput ? fromInput.value.trim() : "";
+      const to = toInput ? toInput.value.trim() : "";
 
       if (!from || !to) {
-        showFormMessage("Add both a departure and destination city to search.", true);
+        displayFeedback(searchForm, "Add both a departure and destination city to search.", true);
         (from ? toInput : fromInput).focus();
         return;
       }
 
       if (from.toLowerCase() === to.toLowerCase()) {
-        showFormMessage("Departure and destination can't be the same place.", true);
+        displayFeedback(searchForm, "Departure and destination can't be the same place.", true);
         toInput.focus();
         return;
       }
 
-      // No backend is connected yet — this is where a fetch() call to
-      // GET /api/v1/flights/search will go once the API is live.
-      // For now, confirm the search was understood so the form doesn't
-      // feel broken to anyone testing the page.
-      showFormMessage(
-        "Searching " + from + " \u2192 " + to + " \u2014 flight results will appear here once search is connected.",
+      displayFeedback(
+        searchForm,
+        `Searching ${from} → ${to} — flight results will appear here once search is connected.`,
         false
       );
     });
   }
 
-  /* ---------- Smooth-scroll for in-page anchor links ---------- */
-  document.querySelectorAll('a[href^="#"]').forEach(function (link) {
-    link.addEventListener("click", function (e) {
-      var targetId = link.getAttribute("href");
-      if (targetId.length <= 1) return; // bare "#" links (logo, etc.)
-      var target = document.querySelector(targetId);
-      if (!target) return;
+  // --- Registration Logic Handler ---
+  if (registerForm) {
+    registerForm.removeAttribute("action");
+    registerForm.removeAttribute("method");
+
+    registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  });
-})();
 
-/* ==========================================================================
-   TraidX Form Handling & API Bridge Component
-   Pure Vanilla JS — Handles secure native asynchronous submissions to endpoints
-   ========================================================================== */
+      const formData = new FormData(registerForm);
+      const password = registerForm.querySelector("[name='Password']");
+      const confirmPassword = registerForm.querySelector("[name='confirm_password']");
 
-(function () {
-  "use strict";
-
-  // Configuration settings for your global API base route
-  var API_BASE_URL = "/api/v1/auth";
-
-  /**
-   * Appends or updates standard user notice message boxes right above the form fields.
-   * Utilizes your existing design color system states via styles.css rules.
-   */
-  function displayFeedbackMessage(formElement, messageText, isError) {
-    // Look for an existing message container within this form
-    var messageBox = formElement.querySelector(".auth-feedback-msg");
-    
-    if (!messageBox) {
-      messageBox = document.createElement("div");
-      messageBox.className = "auth-feedback-msg";
-      // Insert right after the header information segment
-      var formHeader = formElement.querySelector(".form-header");
-      if (formHeader) {
-        formHeader.parentNode.insertBefore(messageBox, formHeader.nextSibling);
-      } else {
-        formElement.insertBefore(messageBox, formElement.firstChild);
+      if (password && password.value.length < 8) {
+        displayFeedback(registerForm, "Security threshold mismatch: Password must be at least 8 characters.", true);
+        password.focus();
+        return;
       }
-    }
 
-    // Set interactive visual states
-    messageBox.textContent = messageText;
-    if (isError) {
-      messageBox.classList.add("auth-feedback-msg--error");
-      messageBox.classList.remove("auth-feedback-msg--success");
-    } else {
-      messageBox.classList.add("auth-feedback-msg--success");
-      messageBox.classList.remove("auth-feedback-msg--error");
-    }
-  }
-
-  /**
-   * Standardized asynchronous network POST handler
-   */
-  function submitAuthData(endpoint, dataObject, formElement, successCallback) {
-    // Provide a localized immediate loading state to the user
-    displayFeedbackMessage(formElement, "Connecting to security gate...", false);
-
-    fetch(API_BASE_URL + endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(dataObject)
-    })
-    .then(function (response) {
-      return response.json().then(function (json) {
-        if (!response.ok) {
-          // If server responds with HTTP 400/401/422 errors, reject the promise chain
-          return Promise.reject(json);
-        }
-        return json;
-      });
-    })
-    .then(function (successData) {
-      displayFeedbackMessage(formElement, successData.message || "Entry authenticated successfully.", false);
-      if (typeof successCallback === "function") {
-        successCallback(successData);
+      if (password && confirmPassword && password.value !== confirmPassword.value) {
+        displayFeedback(registerForm, "Passwords don't match. Please re-enter them.", true);
+        confirmPassword.focus();
+        return;
       }
-    })
-    .catch(function (errorData) {
-      // Capture structured message payloads or fall back to native strings
-      var fallbackErr = "Connection lost. Please verify your terminal network connection.";
-      var explicitErr = errorData && errorData.message ? errorData.message : fallbackErr;
-      displayFeedbackMessage(formElement, explicitErr, true);
+
+      const payload = {
+        username: formData.get("username")?.trim(),
+        email: formData.get("email")?.trim(),
+        password: password?.value
+      };
+
+      const result = await makeRequest("/register", payload, registerForm);
+      
+      if (result) {
+        displayFeedback(registerForm, result.message || "Entry authenticated successfully.", false);
+        setTimeout(() => {
+          window.location.href = "login.html?registered=true";
+        }, 1500);
+      }
     });
   }
 
-  /* ==========================================================================
-     Event Bindings Initialization
-     ========================================================================== */
-  document.addEventListener("DOMContentLoaded", function () {
-    
-    // 1. LOGIN SUBMISSION HANDLING
-    var loginForm = document.getElementById("login-form");
-    if (loginForm) {
-      loginForm.removeAttribute("action"); // Overwrite standard redirection
-      loginForm.removeAttribute("method");
+  // --- Login Logic Handler ---
+  if (loginForm) {
+    loginForm.removeAttribute("action");
+    loginForm.removeAttribute("method");
 
-      loginForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        var emailInput = document.getElementById("login-email");
-        var passwordInput = document.getElementById("login-password");
-
-        if (!emailInput || !passwordInput) return;
-
-        var payload = {
-          email: emailInput.value.trim(),
-          password: passwordInput.value
-        };
-
-        submitAuthData("/login", payload, loginForm, function (response) {
-          // Save stateless JWT token value securely upon successful confirmation
-          if (response.data && response.data.token) {
-            localStorage.setItem("traidx_jwt", response.data.token);
-          }
-          // Safely redirect customer directly to their dashboard home path
-          setTimeout(function () {
-            window.location.href = "dashboard.html";
-          }, 1000);
-        });
-      });
+    if (window.location.search.includes("registered=true")) {
+      displayFeedback(loginForm, "Profile generated successfully. Sign in with your parameters below.", false);
     }
 
-    // 2. REGISTRATION SUBMISSION HANDLING
-    var registerForm = document.getElementById("register-form");
-    if (registerForm) {
-      registerForm.removeAttribute("action");
-      registerForm.removeAttribute("method");
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-      registerForm.addEventListener("submit", function (e) {
-        e.preventDefault();
+      const emailInput = document.getElementById("login-email");
+      const passwordInput = document.getElementById("login-password");
 
-        var firstName = document.getElementById("reg-first-name");
-        var lastName = document.getElementById("reg-last-name");
-        var email = document.getElementById("reg-email");
-        var password = document.getElementById("reg-password");
+      if (!emailInput || !passwordInput) return;
 
-        if (!firstName || !lastName || !email || !password) return;
+      const payload = {
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      };
 
-        // Perform basic input check before firing network requests
-        if (password.value.length < 8) {
-          displayFeedbackMessage(registerForm, "Security threshold mismatch: Password must be at least 8 characters.", true);
-          password.focus();
-          return;
+      const result = await makeRequest("/login", payload, loginForm);
+
+      if (result) {
+        if (result.data && result.data.token) {
+          localStorage.setItem("traidx_jwt", result.data.token);
         }
+        
+        displayFeedback(loginForm, "Access verification cleared. Routing to secure platform workspace...", false);
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1000);
+      }
+    });
+  }
 
-        var payload = {
-          first_name: firstName.value.trim(),
-          last_name: lastName.value.trim(),
-          email: email.value.trim(),
-          password: password.value
-        };
-
-        submitAuthData("/register", payload, registerForm, function () {
-          // Send user smoothly to registration sign-in completion node
-          setTimeout(function () {
-            window.location.href = "login.html?registered=true";
-          }, 1500);
-        });
-      });
-    }
-
-    if (loginForm && window.location.search.indexOf("registered=true") !== -1) {
-      displayFeedbackMessage(loginForm, "Profile generated successfully. Sign in with your parameters below.", false);
-    }
-
-  });
-
-})();
-
-
-/**
- * TraidX System Flow - Password Recovery Module
- */
-document.addEventListener('DOMContentLoaded', () => {
+  // --- Password Recovery Module Flow ---
   let isEmailVerified = false;
-
   const cardRoot = document.getElementById('auth-card-root');
   const authStage = document.getElementById('auth-stage');
   const forgotForm = document.getElementById('forgot-form');
   const resetForm = document.getElementById('reset-form');
   
-  const emailInput = document.getElementById('recovery-email');
+  const emailRecoveryInput = document.getElementById('recovery-email');
   const tokenInput = document.getElementById('recovery-token');
   const tokenContainer = document.getElementById('token-field-container');
   const submitBtn = document.getElementById('action-submit-btn');
   const instructions = document.getElementById('recovery-instructions');
 
-  // Trigger smooth structural scale entry
   if (cardRoot) {
-    setTimeout(() => {
-      cardRoot.classList.remove('initial-zoom');
-    }, 50);
+    setTimeout(() => { cardRoot.classList.remove('initial-zoom'); }, 50);
   }
 
-  // Handle Stage 1 Form Submissions
   if (forgotForm) {
     forgotForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
       if (!isEmailVerified) {
-        // Phase 1: Lock Email & Expose Token Container
-        emailInput.setAttribute('readonly', 'true');
-        emailInput.style.opacity = '0.7';
+        emailRecoveryInput.setAttribute('readonly', 'true');
+        emailRecoveryInput.style.opacity = '0.7';
 
         tokenContainer.classList.add('is-revealed');
         tokenInput.setAttribute('required', 'true');
         tokenInput.focus();
 
-        instructions.innerText = "A secure verification key has been routed to your track. Provide the token parameters to clear entry.";
+        if (instructions) {
+          instructions.innerText = "A secure verification key has been routed to your track. Provide the token parameters to clear entry.";
+        }
         submitBtn.innerText = "Verify Credentials →";
         
         isEmailVerified = true;
       } else {
-        // Phase 2: Slide Stage to Reset Password Form
         authStage.classList.add('slide-to-reset');
       }
     });
   }
 
-  // Handle Stage 2 Password Override Completion
   if (resetForm) {
     resetForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      // Route back to central terminal point safely
       window.location.href = 'login.html';
     });
   }
